@@ -1,13 +1,8 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import { GraphQLClient } from "graphql-request";
-import { getSdk } from "../common/sdk";
-import crypto from "crypto";
-import jwt from "jsonwebtoken";
-
-interface AdminRegisterInput {
-  username: string;
-  password: string;
-}
+import { hashPassword } from "../common/pasword";
+import { signToken } from "../common/jwt";
+import { api } from "../common/api";
+import { AdminRegisterInput } from "../common/sdk";
 
 const handler: Handler = async (
   event: HandlerEvent,
@@ -28,26 +23,20 @@ const handler: Handler = async (
   }
 
   const input: AdminRegisterInput = JSON.parse(body!).input.admin;
-  const sdk = getSdk(new GraphQLClient("http://localhost:8080/v1/graphql"));
 
-  const password = crypto
-    .pbkdf2Sync(input.password, "mygreatesaltsecret", 1000, 64, "sha512")
-    .toString("hex");
+  const password = hashPassword(input.password);
 
-  const data = await sdk.InsertAdmin({
-    username: input.username,
-    password,
-  });
-  const accessToken = jwt.sign(
+  const data = await api.InsertAdmin(
     {
-      "https://hasura.io/jwt/claims": {
-        "x-hasura-default-role": "admin",
-        "x-hasura-allowed-roles": ["admin"],
-        "x-hasura-user-id": data.insert_admin_one?.id,
-      },
+      username: input.username,
+      password,
     },
-    "mygreatjwtsecret"
+    {
+      "x-hasura-admin-secret": "q5Dwbv3Q9P59tEFE",
+    }
   );
+
+  const accessToken = signToken(data.insert_admin_one?.id);
 
   return {
     statusCode: 200,
