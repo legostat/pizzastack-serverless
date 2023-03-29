@@ -19,7 +19,6 @@ const config: CodegenConfig = {
         "typescript",
         "typescript-resolvers",
         "typescript-operations",
-        "typescript-document-nodes",
         "typescript-graphql-request",
       ],
     },

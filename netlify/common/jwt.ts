@@ -1,13 +1,22 @@
 import jwt from "jsonwebtoken";
 
+const JWT_SECRET = "hUf8d67EJzDhfXLz4mkdURGcQc2RZdAt";
+
+export const HASURA_CLAIMS = "https://hasura.io/jwt/claims";
+export const HASURA_USER_ID = "x-hasura-user-id";
+
 export const signToken = (userId: string): string =>
   jwt.sign(
     {
-      "https://hasura.io/jwt/claims": {
+      [HASURA_CLAIMS]: {
         "x-hasura-default-role": "admin",
         "x-hasura-allowed-roles": ["admin"],
-        "x-hasura-user-id": userId,
+        [HASURA_USER_ID]: userId,
       },
     },
-    "hUf8d67EJzDhfXLz4mkdURGcQc2RZdAt"
+    JWT_SECRET
   );
+
+export const getTokenData = (token: string) => {
+  return jwt.verify(token, JWT_SECRET);
+};
