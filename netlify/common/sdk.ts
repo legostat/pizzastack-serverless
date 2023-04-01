@@ -21,6 +21,7 @@ export type Scalars = {
 
 export type AdminGetMeOutput = {
   __typename?: 'AdminGetMeOutput';
+  id: Scalars['String'];
   username: Scalars['String'];
 };
 
@@ -42,6 +43,15 @@ export type AdminRegisterInput = {
 export type AdminRegisterOutput = {
   __typename?: 'AdminRegisterOutput';
   accessToken: Scalars['String'];
+};
+
+export type CloudinarySignatureOutput = {
+  __typename?: 'CloudinarySignatureOutput';
+  apiKey: Scalars['String'];
+  cloudName: Scalars['String'];
+  publicId: Scalars['String'];
+  signature: Scalars['String'];
+  timestamp: Scalars['Int'];
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -662,6 +672,7 @@ export type Query_Root = {
   admin_aggregate: Admin_Aggregate;
   /** fetch data from the table: "admin" using primary key columns */
   admin_by_pk?: Maybe<Admin>;
+  cloudinarySignature?: Maybe<CloudinarySignatureOutput>;
   /** fetch data from the table: "menu" */
   menu: Array<Menu>;
   /** fetch aggregated fields from the table: "menu" */
@@ -890,6 +901,7 @@ export type ResolversTypes = {
   AdminRegisterInput: AdminRegisterInput;
   AdminRegisterOutput: ResolverTypeWrapper<AdminRegisterOutput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CloudinarySignatureOutput: ResolverTypeWrapper<CloudinarySignatureOutput>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -958,6 +970,7 @@ export type ResolversParentTypes = {
   AdminRegisterInput: AdminRegisterInput;
   AdminRegisterOutput: AdminRegisterOutput;
   Boolean: Scalars['Boolean'];
+  CloudinarySignatureOutput: CloudinarySignatureOutput;
   Float: Scalars['Float'];
   Int: Scalars['Int'];
   String: Scalars['String'];
@@ -1018,6 +1031,7 @@ export type CachedDirectiveArgs = {
 export type CachedDirectiveResolver<Result, Parent, ContextType = any, Args = CachedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type AdminGetMeOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdminGetMeOutput'] = ResolversParentTypes['AdminGetMeOutput']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1029,6 +1043,15 @@ export type AdminLoginOutputResolvers<ContextType = any, ParentType extends Reso
 
 export type AdminRegisterOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AdminRegisterOutput'] = ResolversParentTypes['AdminRegisterOutput']> = {
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CloudinarySignatureOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['CloudinarySignatureOutput'] = ResolversParentTypes['CloudinarySignatureOutput']> = {
+  apiKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  cloudName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  publicId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  signature?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timestamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1205,6 +1228,7 @@ export type Query_RootResolvers<ContextType = any, ParentType extends ResolversP
   adminLogin?: Resolver<Maybe<ResolversTypes['AdminLoginOutput']>, ParentType, ContextType, RequireFields<Query_RootAdminLoginArgs, 'admin'>>;
   admin_aggregate?: Resolver<ResolversTypes['admin_aggregate'], ParentType, ContextType, Partial<Query_RootAdmin_AggregateArgs>>;
   admin_by_pk?: Resolver<Maybe<ResolversTypes['admin']>, ParentType, ContextType, RequireFields<Query_RootAdmin_By_PkArgs, 'id'>>;
+  cloudinarySignature?: Resolver<Maybe<ResolversTypes['CloudinarySignatureOutput']>, ParentType, ContextType>;
   menu?: Resolver<Array<ResolversTypes['menu']>, ParentType, ContextType, Partial<Query_RootMenuArgs>>;
   menu_aggregate?: Resolver<ResolversTypes['menu_aggregate'], ParentType, ContextType, Partial<Query_RootMenu_AggregateArgs>>;
   menu_by_pk?: Resolver<Maybe<ResolversTypes['menu']>, ParentType, ContextType, RequireFields<Query_RootMenu_By_PkArgs, 'id'>>;
@@ -1229,6 +1253,7 @@ export type Resolvers<ContextType = any> = {
   AdminGetMeOutput?: AdminGetMeOutputResolvers<ContextType>;
   AdminLoginOutput?: AdminLoginOutputResolvers<ContextType>;
   AdminRegisterOutput?: AdminRegisterOutputResolvers<ContextType>;
+  CloudinarySignatureOutput?: CloudinarySignatureOutputResolvers<ContextType>;
   admin?: AdminResolvers<ContextType>;
   admin_aggregate?: Admin_AggregateResolvers<ContextType>;
   admin_aggregate_fields?: Admin_Aggregate_FieldsResolvers<ContextType>;
@@ -1267,12 +1292,12 @@ export type GetAdminByUsernameQueryVariables = Exact<{
 
 export type GetAdminByUsernameQuery = { __typename?: 'query_root', admin: Array<{ __typename?: 'admin', id: any, password: string }> };
 
-export type AdminGetMeQueryVariables = Exact<{
+export type GetAdminByIdQueryVariables = Exact<{
   id: Scalars['uuid'];
 }>;
 
 
-export type AdminGetMeQuery = { __typename?: 'query_root', admin_by_pk?: { __typename?: 'admin', username: string } | null };
+export type GetAdminByIdQuery = { __typename?: 'query_root', admin_by_pk?: { __typename?: 'admin', id: any, username: string } | null };
 
 export type InsertAdminMutationVariables = Exact<{
   username: Scalars['String'];
@@ -1291,9 +1316,10 @@ export const GetAdminByUsernameDocument = gql`
   }
 }
     `;
-export const AdminGetMeDocument = gql`
-    query AdminGetMe($id: uuid!) {
+export const GetAdminByIdDocument = gql`
+    query GetAdminById($id: uuid!) {
   admin_by_pk(id: $id) {
+    id
     username
   }
 }
@@ -1316,8 +1342,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetAdminByUsername(variables: GetAdminByUsernameQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAdminByUsernameQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAdminByUsernameQuery>(GetAdminByUsernameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAdminByUsername', 'query');
     },
-    AdminGetMe(variables: AdminGetMeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AdminGetMeQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AdminGetMeQuery>(AdminGetMeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AdminGetMe', 'query');
+    GetAdminById(variables: GetAdminByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAdminByIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAdminByIdQuery>(GetAdminByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAdminById', 'query');
     },
     InsertAdmin(variables: InsertAdminMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertAdminMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertAdminMutation>(InsertAdminDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertAdmin', 'mutation');

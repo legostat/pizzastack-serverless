@@ -4,10 +4,7 @@ import { signToken } from "../common/jwt";
 import { api } from "../common/api";
 import { AdminRegisterInput } from "../common/sdk";
 
-const handler: Handler = async (
-  event: HandlerEvent,
-  context: HandlerContext
-) => {
+const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
   const { body, headers } = event;
 
   if (
