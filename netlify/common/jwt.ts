@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET = "hUf8d67EJzDhfXLz4mkdURGcQc2RZdAt";
+import { config } from "../core/config";
 
 export const HASURA_CLAIMS = "https://hasura.io/jwt/claims";
 export const HASURA_USER_ID = "x-hasura-user-id";
@@ -14,9 +13,9 @@ export const signToken = (userId: string): string =>
         [HASURA_USER_ID]: userId,
       },
     },
-    JWT_SECRET
+    config.jwtSecret
   );
 
 export const getTokenData = (token: string) => {
-  return jwt.verify(token, JWT_SECRET);
+  return jwt.verify(token, config.jwtSecret);
 };

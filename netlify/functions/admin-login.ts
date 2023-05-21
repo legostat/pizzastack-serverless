@@ -3,6 +3,7 @@ import { hashPassword } from "../common/pasword";
 import { signToken } from "../common/jwt";
 import { api } from "../common/api";
 import { AdminLoginInput } from "../common/sdk";
+import { config } from "../core/config";
 
 const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
   const { body } = event;
@@ -14,7 +15,7 @@ const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
   const data = await api.GetAdminByUsername(
     { username: input.username },
     {
-      "x-hasura-admin-secret": "q5Dwbv3Q9P59tEFE",
+      "x-hasura-admin-secret": config.hasuraAdminSecret,
     }
   );
 

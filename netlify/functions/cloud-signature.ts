@@ -2,11 +2,12 @@ import { Handler, HandlerEvent } from "@netlify/functions";
 import { v2 as cloudinary } from "cloudinary";
 import { getAdminFromHeaders } from "../common/get-admin-from-headers";
 import { GetAdminByIdQuery } from "../common/sdk";
+import { config } from "../core/config";
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+  cloud_name: config.cloudinaryCloudName,
+  api_key: config.cloudinaryApiKey,
+  api_secret: config.cloudinaryApiSecret,
   secure: true,
 });
 
@@ -41,8 +42,8 @@ const handler: Handler = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      apiKey: process.env.API_KEY,
-      cloudName: process.env.CLOUD_NAME,
+      apiKey: config.cloudinaryApiKey,
+      cloudName: config.cloudinaryCloudName,
       signature,
       timestamp,
       publicId,

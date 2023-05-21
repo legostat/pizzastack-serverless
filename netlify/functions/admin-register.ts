@@ -3,13 +3,14 @@ import { hashPassword } from "../common/pasword";
 import { signToken } from "../common/jwt";
 import { api } from "../common/api";
 import { AdminRegisterInput } from "../common/sdk";
+import { config } from "../core/config";
 
 const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
   const { body, headers } = event;
 
   if (
     !headers["x-pizzastack-secret-key"] ||
-    headers["x-pizzastack-secret-key"] !== "mypizzastacksecretkey"
+    headers["x-pizzastack-secret-key"] !== config.hasuraPizzastackSecret
   ) {
     return {
       statusCode: 403,
@@ -29,7 +30,7 @@ const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
       password,
     },
     {
-      "x-hasura-admin-secret": "q5Dwbv3Q9P59tEFE",
+      "x-hasura-admin-secret": config.hasuraAdminSecret,
     }
   );
 
