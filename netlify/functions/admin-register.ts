@@ -2,7 +2,7 @@ import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 import { hashPassword } from "../common/pasword";
 import { signToken } from "../common/jwt";
 import { api } from "../common/api";
-import { AdminRegisterInput } from "../common/sdk";
+import { AdminRegisterInput, InsertAdminMutation } from "../common/sdk";
 import { config } from "../core/config";
 
 const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
@@ -22,9 +22,9 @@ const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
 
   const input: AdminRegisterInput = JSON.parse(body!).input.admin;
 
-  const password = hashPassword(input.password);
+  const password: string = hashPassword(input.password);
 
-  const data = await api.InsertAdmin(
+  const data: InsertAdminMutation = await api.InsertAdmin(
     {
       username: input.username,
       password,
@@ -34,7 +34,7 @@ const handler: Handler = async (event: HandlerEvent, _: HandlerContext) => {
     }
   );
 
-  const accessToken = signToken(data.insert_admin_one?.id);
+  const accessToken: string = signToken(data.insert_admin_one?.id);
 
   return {
     statusCode: 200,
